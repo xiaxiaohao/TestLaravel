@@ -7,7 +7,9 @@ use ReflectionFunction;
 use Illuminate\Http\Response;
 use Dingo\Api\Contract\Debug\ExceptionHandler;
 use Dingo\Api\Contract\Debug\MessageBagErrors;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response as BaseResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Illuminate\Contracts\Debug\ExceptionHandler as IlluminateExceptionHandler;
 
@@ -77,6 +79,18 @@ class Handler implements ExceptionHandler, IlluminateExceptionHandler
     }
 
     /**
+     * Determine if the exception should be reported.
+     *
+     * @param  \Exception  $e
+     *
+     * @return bool
+     */
+    public function shouldReport(Exception $e)
+    {
+        return true;
+    }
+
+    /**
      * Render an exception into an HTTP response.
      *
      * @param \Dingo\Api\Http\Request $request
@@ -127,6 +141,11 @@ class Handler implements ExceptionHandler, IlluminateExceptionHandler
      */
     public function handle(Exception $exception)
     {
+        // Convert Eloquent's 500 ModelNotFoundException into a 404 NotFoundHttpException
+        if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+            $exception = new NotFoundHttpException($exception->getMessage(), $exception);
+        }
+
         foreach ($this->handlers as $hint => $handler) {
             if (! $exception instanceof $hint) {
                 continue;
@@ -179,6 +198,10 @@ class Handler implements ExceptionHandler, IlluminateExceptionHandler
      */
     protected function getStatusCode(Exception $exception)
     {
+        if ($exception instanceof ValidationException) {
+            return $exception->status;
+        }
+
         return $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
     }
 
@@ -218,6 +241,11 @@ class Handler implements ExceptionHandler, IlluminateExceptionHandler
             $replacements[':errors'] = $exception->getErrors();
         }
 
+        if ($exception instanceof ValidationException) {
+            $replacements[':errors'] = $exception->errors();
+            $replacements[':status_code'] = $exception->status;
+        }
+
         if ($code = $exception->getCode()) {
             $replacements[':code'] = $code;
         }
@@ -229,6 +257,16 @@ class Handler implements ExceptionHandler, IlluminateExceptionHandler
                 'class' => get_class($exception),
                 'trace' => explode("\n", $exception->getTraceAsString()),
             ];
+
+            // Attach trace of previous exception, if exists
+            if (! is_null($exception->getPrevious())) {
+                $currentTrace = $replacements[':debug']['trace'];
+
+                $replacements[':debug']['trace'] = [
+                    'previous' => explode("\n", $exception->getPrevious()->getTraceAsString()),
+                    'current' => $currentTrace,
+                ];
+            }
         }
 
         return array_merge($replacements, $this->replacements);

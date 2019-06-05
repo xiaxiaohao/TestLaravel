@@ -2,8 +2,10 @@
 
 namespace Dingo\Api\Console\Command;
 
+use Dingo\Api\Routing\Router;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use Dingo\Api\Contract\Routing\Adapter;
 use Illuminate\Contracts\Console\Kernel;
 
 class Cache extends Command
@@ -30,15 +32,33 @@ class Cache extends Command
     protected $files;
 
     /**
+     * Router instance.
+     *
+     * @var \Dingo\Api\Routing\Router
+     */
+    private $router;
+
+    /**
+     * Adapter instance.
+     *
+     * @var \Dingo\Api\Contract\Routing\Adapter
+     */
+    private $adapter;
+
+    /**
      * Create a new cache command instance.
      *
-     * @param \Illuminate\Filesystem\Filesystem $files
+     * @param \Illuminate\Filesystem\Filesystem   $files
+     * @param \Dingo\Api\Routing\Router           $router
+     * @param \Dingo\Api\Contract\Routing\Adapter $adapter
      *
      * @return void
      */
-    public function __construct(Filesystem $files)
+    public function __construct(Filesystem $files, Router $router, Adapter $adapter)
     {
         $this->files = $files;
+        $this->router = $router;
+        $this->adapter = $adapter;
 
         parent::__construct();
     }
@@ -84,7 +104,11 @@ class Cache extends Command
      */
     protected function getFreshApplication()
     {
-        $app = require $this->laravel->basePath().'/bootstrap/app.php';
+        if (method_exists($this->laravel, 'bootstrapPath')) {
+            $app = require $this->laravel->bootstrapPath().'/app.php';
+        } else {
+            $app = require $this->laravel->basePath().'/bootstrap/app.php';
+        }
 
         $app->make(Kernel::class)->bootstrap();
 

@@ -14,7 +14,9 @@ use Dingo\Api\Http\InternalRequest;
 use Illuminate\Container\Container;
 use Dingo\Api\Contract\Routing\Adapter;
 use Dingo\Api\Contract\Debug\ExceptionHandler;
+use Illuminate\Routing\Route as IlluminateRoute;
 use Illuminate\Http\Response as IlluminateResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\NotAcceptableHttpException;
 
 class Router
@@ -117,7 +119,7 @@ class Router
      * This method can be called without the third parameter, however,
      * the callback should always be the last parameter.
      *
-     * @param string         $version
+     * @param array|string   $version
      * @param array|callable $second
      * @param callable       $third
      *
@@ -510,10 +512,6 @@ class Router
 
         try {
             $response = $this->adapter->dispatch($request, $request->version());
-
-            if (property_exists($response, 'exception') && $response->exception instanceof Exception) {
-                throw $response->exception;
-            }
         } catch (Exception $exception) {
             if ($request instanceof InternalRequest) {
                 throw $exception;
@@ -560,7 +558,7 @@ class Router
 
         if ($response->isSuccessful() && $this->requestIsConditional()) {
             if (! $response->headers->has('ETag')) {
-                $response->setEtag(sha1($response->getContent()));
+                $response->setEtag(sha1($response->getContent() ?: ''));
             }
 
             $response->isNotModified($request);
@@ -624,6 +622,17 @@ class Router
             return $this->currentRoute;
         } elseif (! $this->hasDispatchedRoutes() || ! $route = $this->container['request']->route()) {
             return;
+        }
+
+        // We need to recompile the route, adding the where clause (for pattern restrictions) and check again
+        if (is_object($route) && $route instanceof IlluminateRoute) {
+            $route->compiled = false;
+            $this->addWhereClausesToRoute($route);
+
+            // If the matching fails, it would be due to a parameter format validation check fail
+            if (! $route->matches($this->container['request'])) {
+                throw new NotFoundHttpException('Not Found!');
+            }
         }
 
         return $this->currentRoute = $this->createRoute($route);
@@ -847,5 +856,23 @@ class Router
     public function currentRouteUses($action)
     {
         return $this->currentRouteAction() == $action;
+    }
+
+    /**
+     * Add the necessary where clauses to the route based on its initial registration.
+     *
+     * @param  \Illuminate\Routing\Route  $route
+     *
+     * @return \Illuminate\Routing\Route
+     */
+    protected function addWhereClausesToRoute($route)
+    {
+        $patterns = app()->make(\Illuminate\Routing\Router::class)->getPatterns();
+
+        $route->where(array_merge(
+            $patterns, $route->getAction()['where'] ?? []
+        ));
+
+        return $route;
     }
 }

@@ -18,35 +18,18 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-
-
-
+//dingo路由
 $api = app('Dingo\Api\Routing\Router');
 
-$api->version('v1', function ($api) {
+$api->version('v1', ['namespace' => 'App\Http\Controllers\API\V1'], function ($api) {
 
+    $api->get('testapi', 'UserController@FindAll');
+
+    $api->get('testapi/{id}', 'UserController@FindOne');
 });
 
-$api->version(['v1', 'v2'], function ($api) {
 
-});
 
-$api->version('v1', ['middleware' => 'foo'], function ($api) {
 
-});
 
-$api->version('v1', function ($api) {
-    $api->get('users/{id}', 'App\Api\Controllers\UserController@show');
-});
 
-$api->version('v1', function ($api) {
-    $api->get('users/{id}', 'App\Api\V1\Controllers\UserController@show');
-});
-
-$api->version('v2', function ($api) {
-    $api->get('users/{id}', 'App\Api\V2\Controllers\UserController@show');
-});
-
-$api->get('users/{id}', ['as' => 'users.index', 'uses' => 'Api\V1\UserController@show']);
-
-app('Dingo\Api\Routing\UrlGenerator')->version('v1')->route('users.index');
