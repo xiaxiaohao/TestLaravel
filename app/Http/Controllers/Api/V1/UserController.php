@@ -5,13 +5,13 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\BaseController;
 use App\Model\UserModel;
-
+use Dingo\Api\Routing\Helpers;
 
 
 class UserController extends BaseController
 {
 
-
+    use Helpers;
     public function FindAll()
     {
         return UserModel::all();
