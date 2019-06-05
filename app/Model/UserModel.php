@@ -5,7 +5,7 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ApiModel extends Model
+class UserModel extends Model
 {
     //    定义数据库表名
     protected $table = 'user';
@@ -16,7 +16,10 @@ class ApiModel extends Model
     //lavarel自动管理created_at和updated_at
     public $timestamps = false;
 
-
+    public function test()
+    {
+        return $this->hasOne('App\TestModel', 'api');
+    }
 
 
 }

@@ -26,6 +26,8 @@ $api->version('v1', ['namespace' => 'App\Http\Controllers\API\V1'], function ($a
     $api->get('testapi', 'UserController@FindAll');
 
     $api->get('testapi/{id}', 'UserController@FindOne');
+
+    $api->get('test','UserTransformer@transform');
 });
 
 
