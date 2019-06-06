@@ -21,7 +21,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 //dingo路由
 $api = app('Dingo\Api\Routing\Router');
 
-$api->version('v1', ['namespace' => 'App\Http\Controllers\API\V1'], function ($api) {
+$api->version('v1', ['namespace' => 'App\Http\Controllers\Api\V1'], function ($api) {
 
     $api->get('testapi', 'UserController@FindAll');
 
