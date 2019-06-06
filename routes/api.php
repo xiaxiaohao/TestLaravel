@@ -27,7 +27,10 @@ $api->version('v1', ['namespace' => 'App\Http\Controllers\Api\V1'], function ($a
 
     $api->get('testapi/{id}', 'UserController@FindOne');
 
-    $api->get('test','UserTransformer@transform');
+
+    $api->get('delete','UserController@DeleteOne');
+
+    $api->post('update','UserController@UpdateOne');
 });
 
 
