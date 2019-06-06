@@ -46,9 +46,9 @@ class UserController extends Controller
     public function findAll()
     {
 //        return UserModel::all();
-//     定制化响应
+//        定制化响应
 
-        $user = UserModel::all();
+          $user = UserModel::all();
 //        响应一个数组
 //        return $this->response->array($user->toArray());
 //        响应一个元素集合
@@ -89,7 +89,7 @@ class UserController extends Controller
 
             $user = UserModel::findOrFail($request->id);
             if ($user) {
-                UserModel::deleted($request->id);
+                $user->delete();
                 $this->msg(200, "success");
             }
 
