@@ -14,3 +14,6 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('view',['uses'=>'Api\V1\CategoryController@manageCategory']);
+Route::post('add-category',['as'=>'add.category','uses'=>'Api\V1\CategoryController@addCategory']);

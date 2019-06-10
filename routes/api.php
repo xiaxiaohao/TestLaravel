@@ -18,6 +18,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
+Route::get('view',['uses'=>'Api\V1\CategoryController@manageCategory']);
+Route::post('add-category',['as'=>'add.category','uses'=>'Api\V1\CategoryController@addCategory']);
+
 //dingo路由
 $api = app('Dingo\Api\Routing\Router');
 
@@ -31,7 +34,23 @@ $api->version('v1', ['namespace' => 'App\Http\Controllers\Api\V1'], function ($a
     $api->get('delete','UserController@DeleteOne');
 
     $api->post('update','UserController@UpdateOne');
+
+
+
+    $api->get('list', 'TagController@FindAll');
+
+    $api->get('find/{id}', 'TagController@FindOne');
+
+    $api->post('updatetag','TagController@UpdateOne');
+
+    $api->post('del','TagController@DeleteOne');
+
+
+
 });
+
+
+
 
 
 

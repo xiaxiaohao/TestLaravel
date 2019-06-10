@@ -21,6 +21,7 @@ class ComposerStaticInit2eab02b41100505732efce5fff728040
         '801c31d8ed748cfa537fa45402288c95' => __DIR__ . '/..' . '/psy/psysh/src/functions.php',
         'f0906e6318348a765ffb6eb24e0d0938' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/helpers.php',
         '58571171fd5812e6e447dce228f52f4d' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Support/helpers.php',
+        'f18cc91337d49233e5754e93f3ed9ec3' => __DIR__ . '/..' . '/laravelcollective/html/src/helpers.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -116,6 +117,7 @@ class ComposerStaticInit2eab02b41100505732efce5fff728040
         array (
             'Dotenv\\' => 7,
             'Doctrine\\Instantiator\\' => 22,
+            'Doctrine\\Common\\Lexer\\' => 22,
             'Doctrine\\Common\\Inflector\\' => 26,
             'Doctrine\\Common\\Annotations\\' => 28,
             'Dingo\\Blueprint\\' => 16,
@@ -125,6 +127,7 @@ class ComposerStaticInit2eab02b41100505732efce5fff728040
         'C' => 
         array (
             'Cron\\' => 5,
+            'Collective\\Html\\' => 16,
             'Carbon\\' => 7,
         ),
         'A' => 
@@ -328,6 +331,10 @@ class ComposerStaticInit2eab02b41100505732efce5fff728040
         array (
             0 => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator',
         ),
+        'Doctrine\\Common\\Lexer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/lexer/lib/Doctrine/Common/Lexer',
+        ),
         'Doctrine\\Common\\Inflector\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/inflector/lib/Doctrine/Common/Inflector',
@@ -351,6 +358,10 @@ class ComposerStaticInit2eab02b41100505732efce5fff728040
         'Cron\\' => 
         array (
             0 => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron',
+        ),
+        'Collective\\Html\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/laravelcollective/html/src',
         ),
         'Carbon\\' => 
         array (
@@ -385,21 +396,20 @@ class ComposerStaticInit2eab02b41100505732efce5fff728040
                 0 => __DIR__ . '/..' . '/mockery/mockery/library',
             ),
         ),
-        'D' => 
-        array (
-            'Doctrine\\Common\\Lexer\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/doctrine/lexer/lib',
-            ),
-        ),
     );
 
     public static $classMap = array (
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
-        'App\\Http\\Controllers\\Api\\AdminApiController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/AdminApiController.php',
+        'App\\Exceptions\\TagException' => __DIR__ . '/../..' . '/app/Exceptions/TagException.php',
+        'App\\Exceptions\\UserException' => __DIR__ . '/../..' . '/app/Exceptions/UserException.php',
         'App\\Http\\Controllers\\Api\\BaseController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/BaseController.php',
-        'App\\Http\\Controllers\\Api\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/UserController.php',
+        'App\\Http\\Controllers\\Api\\V1\\CategoryController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/V1/CategoryController.php',
+        'App\\Http\\Controllers\\Api\\V1\\TagController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/V1/TagController.php',
+        'App\\Http\\Controllers\\Api\\V1\\TagTransformer' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/V1/TagTransformer.php',
+        'App\\Http\\Controllers\\Api\\V1\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/V1/UserController.php',
+        'App\\Http\\Controllers\\Api\\V1\\UserTransformer' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/V1/UserTransformer.php',
+        'App\\Http\\Controllers\\Api\\V2\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/V2/UserController.php',
         'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
         'App\\Http\\Controllers\\Auth\\LoginController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/LoginController.php',
         'App\\Http\\Controllers\\Auth\\RegisterController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/RegisterController.php',
@@ -411,6 +421,9 @@ class ComposerStaticInit2eab02b41100505732efce5fff728040
         'App\\Http\\Middleware\\TrimStrings' => __DIR__ . '/../..' . '/app/Http/Middleware/TrimStrings.php',
         'App\\Http\\Middleware\\TrustProxies' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustProxies.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
+        'App\\Model\\Category' => __DIR__ . '/../..' . '/app/Model/Category.php',
+        'App\\Model\\TagModel' => __DIR__ . '/../..' . '/app/Model/TagModel.php',
+        'App\\Model\\UserModel' => __DIR__ . '/../..' . '/app/Model/UserModel.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
         'App\\Providers\\BroadcastServiceProvider' => __DIR__ . '/../..' . '/app/Providers/BroadcastServiceProvider.php',
@@ -446,6 +459,13 @@ class ComposerStaticInit2eab02b41100505732efce5fff728040
         'Carbon\\Traits\\Units' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Traits/Units.php',
         'Carbon\\Traits\\Week' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Traits/Week.php',
         'Carbon\\Translator' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Translator.php',
+        'Collective\\Html\\Componentable' => __DIR__ . '/..' . '/laravelcollective/html/src/Componentable.php',
+        'Collective\\Html\\Eloquent\\FormAccessible' => __DIR__ . '/..' . '/laravelcollective/html/src/Eloquent/FormAccessible.php',
+        'Collective\\Html\\FormBuilder' => __DIR__ . '/..' . '/laravelcollective/html/src/FormBuilder.php',
+        'Collective\\Html\\FormFacade' => __DIR__ . '/..' . '/laravelcollective/html/src/FormFacade.php',
+        'Collective\\Html\\HtmlBuilder' => __DIR__ . '/..' . '/laravelcollective/html/src/HtmlBuilder.php',
+        'Collective\\Html\\HtmlFacade' => __DIR__ . '/..' . '/laravelcollective/html/src/HtmlFacade.php',
+        'Collective\\Html\\HtmlServiceProvider' => __DIR__ . '/..' . '/laravelcollective/html/src/HtmlServiceProvider.php',
         'Cron\\AbstractField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/AbstractField.php',
         'Cron\\CronExpression' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/CronExpression.php',
         'Cron\\DayOfMonthField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/DayOfMonthField.php',
@@ -4036,8 +4056,10 @@ class ComposerStaticInit2eab02b41100505732efce5fff728040
         'Symfony\\Thanks\\Thanks' => __DIR__ . '/..' . '/symfony/thanks/src/Thanks.php',
         'Tests\\CreatesApplication' => __DIR__ . '/../..' . '/tests/CreatesApplication.php',
         'Tests\\Feature\\ExampleTest' => __DIR__ . '/../..' . '/tests/Feature/ExampleTest.php',
+        'Tests\\Feature\\UserTest' => __DIR__ . '/../..' . '/tests/Feature/UserTest.php',
         'Tests\\TestCase' => __DIR__ . '/../..' . '/tests/TestCase.php',
         'Tests\\Unit\\ExampleTest' => __DIR__ . '/../..' . '/tests/Unit/ExampleTest.php',
+        'Tests\\Unit\\UserTest' => __DIR__ . '/../..' . '/tests/Unit/UserTest.php',
         'Text_Template' => __DIR__ . '/..' . '/phpunit/php-text-template/src/Template.php',
         'TheSeer\\Tokenizer\\Exception' => __DIR__ . '/..' . '/theseer/tokenizer/src/Exception.php',
         'TheSeer\\Tokenizer\\NamespaceUri' => __DIR__ . '/..' . '/theseer/tokenizer/src/NamespaceUri.php',

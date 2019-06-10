@@ -47,7 +47,6 @@ class UserController extends Controller
     {
 //        return UserModel::all();
 //        定制化响应
-
           $user = UserModel::all();
 //        响应一个数组
 //        return $this->response->array($user->toArray());
@@ -69,10 +68,10 @@ class UserController extends Controller
 
 //      定制化响应
         if ($id > count($users)) {
-//            throw  new NotFoundHttpException("asdadsa");
+//          throw  new NotFoundHttpException("asdadsa");
             throw  new UserException(401);
 
-//            return $this->response->noContent();
+//          return $this->response->noContent();
 
         }
 
@@ -133,7 +132,7 @@ class UserController extends Controller
 
 
         } catch (\Exception $exception) {
-//            $a= $exception->getMessage();
+//          $a= $exception->getMessage();
             $this->msg(1000, "此用户不存在");
         }
     }
