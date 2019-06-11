@@ -15,7 +15,7 @@ class CategoryController extends Controller
     {
         $categories = Category::where('pid', '=', 0)->get();
         $allCategories = Category::pluck('title','id')->all();
-        return view('categoryTreeview',compact('categories','allCategories'));
+        return view('tagAdd',compact('categories','allCategories'));
     }
 
     public function addCategory(Request $request)

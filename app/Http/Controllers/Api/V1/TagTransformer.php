@@ -12,7 +12,7 @@ class TagTransformer extends  TransformerAbstract
         return [
             'id'=>$tagModel['id'],
             'tag_name'=>$tagModel['tag_name'],
-            'tag_category_id'=>$tagModel['tag_category_id'],
+            'category_id'=>$tagModel['category_id'],
             'tag_specs'=>$tagModel['tag_specs'],
             'pic'=>$tagModel['pic'],
             'is_delete'=>$tagModel['is_delete'],

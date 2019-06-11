@@ -18,11 +18,10 @@
                     </h3>
                     <ul id="tree1">
                         @foreach($categories as $category)
-                            <li>
+                            <li id="{{ $category->id }}">
                                 {{ $category->title }}
                                 @if(count($category->childs))
                                     @include('manageChild',['childs' => $category->childs])
-
                                 @endif
                             </li>
                         @endforeach
@@ -30,8 +29,8 @@
 
                 </div>
                 <div class="col-md-6">
-                    <h3>Add New Category</h3>
-                    {!! Form::open(['route'=>'add.category']) !!}
+                    <h3>Add New Tag</h3>
+                    {!! Form::open(['route'=>'add.tag']) !!}
                     @if ($message = Session::get('success'))
                         <div class="alert alert-success alert-block">
                             <button type="button" class="close" data-dismiss="alert">×</button>
@@ -39,35 +38,33 @@
                         </div>
                     @endif
 
-                    <div class="form-group {{ $errors->has('title') ? 'has-error' : '' }}">
-                        {!! Form::label('Title:') !!}
-                        {!! Form::text('title', old('title'), ['class'=>'form-control', 'placeholder'=>'Enter Title']) !!}
-                        <span class="text-danger">{{ $errors->first('title') }}</span>
+                    <div class="form-group {{ $errors->has('tag_name') ? 'has-error' : '' }}">
+                        {!! Form::label('tag_name:') !!}
+                        {!! Form::text('tag_name', old('tag_name'), ['class'=>'form-control', 'placeholder'=>'Enter Name']) !!}
+                        <span class="text-danger">{{ $errors->first('tag_name') }}</span>
                     </div>
 
-                    <div class="form-group {{ $errors->has('pid') ? 'has-error' : '' }}">
-                        {!! Form::label('Category:') !!}
-                        {!! Form::select('pid',$allCategories, old('pid'), ['class'=>'form-control', 'placeholder'=>'Select Category']) !!}
-                        <span class="text-danger">{{ $errors->first('pid') }}</span>
+                    <div  class="form-group {{ $errors->has('category_id') ? 'has-error' : '' }}">
+                        {!! Form::label('Category id:') !!}
+                        {!! Form::text('category_id', old('category_id'), ['id'=>'category_id','class'=>'form-control', 'placeholder'=>'Choose Category']) !!}
+                        <span class="text-danger">{{ $errors->first('category_id') }}</span>
                     </div>
 
+                    <div class="form-group {{ $errors->has('tag_specs') ? 'has-error' : '' }}">
+                        {!! Form::label('Tag_specs:') !!}
+                        {!! Form::text('tag_specs', old('tag_specs'), ['class'=>'form-control', 'placeholder'=>'Enter Tag_specs']) !!}
+                        <span class="text-danger">{{ $errors->first('tag_specs') }}</span>
+                    </div>
+
+                    <div class="form-group {{ $errors->has('pic') ? 'has-error' : '' }}">
+                        {!! Form::label('picture:') !!}
+                        {!! Form::file('pic', old('pic'), ['class'=>'form-control', 'placeholder'=>'Upload Picture']) !!}
+                        <span class="text-danger">{{ $errors->first('tag_specs') }}</span>
+                    </div>
                     <div class="form-group">
                         <button class="btn btn-success">Add New</button>
                     </div>
-                        {!! Form::close() !!}
-                    <form action="/test/upload" method="post" enctype="multipart/form-data">
-                        {{ csrf_field() }}
-                        <input type="file" name="meinv">
-                        <input type="submit" value="上传">
-                    </form>
-                </div>
-                <div id="list" class="col-md-12">
-                    <h3>标签列表</h3>
-                    <ul>
-                                    @include('tagView')
-
-                    </ul>
-
+                    {!! Form::close() !!}
                 </div>
             </div>
 
@@ -77,5 +74,6 @@
 
 
 <script src="/js/treeview.js"></script>
+<script src="/js/category_id.js"></script>
 </body>
 </html>

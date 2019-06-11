@@ -44,20 +44,33 @@ class TagController extends Controller
         $this->msg($errcode, $msg);
     }
 
+
+    public function manageTag()
+    {
+        $tags = TagModel::where('is_delete', '=', 0)
+            ->get();
+        $allTags = TagModel::pluck('tag_name','id')->all();
+        return view('View',compact('tags','allTags'));
+    }
+
     public function findAll()
     {
-        $tag = TagModel::all();
+//        $tag = TagModel::all();
+//        $tags = TagModel::paginate(25);
 
-        $tags = TagModel::paginate(25);
 
-        return $this->response->paginator($tags, new TagTransformer);
+        $tags = TagModel::where('is_delete', '=', 0)->get();
+        $allTags = TagModel::pluck('tag_name','id')->all();
+        return view('View',compact('tags','allTags'));
+//
+//        return $this->response->paginator($tags, new TagTransformer);
     }
 
 
     public function findOne($id)
     {
-        $tags = TagModel::all();
-        $tags = $tags->toArray();
+        $tag = TagModel::all();
+        $tags = $tag->toArray();
         if ($id > count($tags)) {
             throw  new TagException(401);
 
@@ -81,7 +94,7 @@ class TagController extends Controller
 //                    $tag->delete();
                    $this->msg(200, "delete success");
                 }else {
-                    $this->msg(1000, "delete error");
+                   $this->msg(1000, "delete error");
                 }
             }
 
@@ -101,8 +114,8 @@ class TagController extends Controller
                     if (($request->tag_name) != null) {
                         $tag->tag_name = $request->tag_name;
                     }
-                    if (($request->tag_category_id) != null) {
-                        $tag->tag_category_id = $request->tag_category_id;
+                    if (($request->category_id) != null) {
+                        $tag->category_id = $request->category_id;
                     }
                     if (($request->tag_specs) != null) {
                         $tag->tag_specs = $request->tag_specs;
@@ -113,6 +126,9 @@ class TagController extends Controller
                     if (($request->update_time) != null) {
                         $tag->update_time = $request->update_time;
                     }
+                    if (($request->add_time) != null) {
+                        $tag->add_time = $request->add_time;
+                    }
 
                     $tag->save();
                     $this->msg(200, 'success update one');
@@ -120,13 +136,12 @@ class TagController extends Controller
             } else {
                 $tag = new TagModel();
                 $tag->tag_name = $request->tag_name;
-                if (($request->tag_category_id) != null) {
-                    $tag->tag_category_id = $request->tag_category_id;
+                if (($request->category_id) != null) {
+                    $tag->category_id = $request->category_id;
                 }
                 $tag->tag_specs = $request->tag_specs;
                 $tag->add_time = $request->add_time;
-
-
+                $tag->pic = $request->pic;
                 $tag->save();
                 $this->msg(200, 'success add one');
             }
@@ -137,6 +152,36 @@ class TagController extends Controller
             $this->msg(1000, "此用户不存在");
         }
     }
+
+    public function uploadImg(Request $request){
+
+        $tag_pic = $request->pic('img');
+        if ($tag_pic) {
+
+            //获取文件的原文件名 包括扩展名
+            $yuanname= $tag_pic->getClientOriginalName();
+
+            //获取文件的扩展名
+            $tag=$tag_pic->getClientOriginalExtension();
+
+            //获取文件的类型
+            $type=$tag_pic->getClientMimeType();
+
+            //获取文件的绝对路径，但是获取到的在本地不能打开
+            $path=$tag_pic->getRealPath();
+
+            //要保存的文件名 时间+扩展名
+            $filename=date('Y-m-d') . '/' . uniqid() .'.'.$tag;
+            //保存文件          配置文件存放文件的名字  ，文件名，路径
+            $bool= Storage::disk('uploadimg')->put($filename,file_get_contents($path));
+            //return back();
+            return json_encode(['status'=>1,'filepath'=>$filename]);
+        }else{
+            $idCardFrontImg = '';
+            return json_encode($idCardFrontImg);
+        }
+    }
+
 
 
 
