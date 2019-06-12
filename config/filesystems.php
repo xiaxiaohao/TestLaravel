@@ -43,14 +43,11 @@ return [
 
     'disks' => [
 
-        'uploadimg'=>[
+        'uploads'=>[
             'driver'=>'local',
-            'root'=>storage_path(config('admin.upload_img_path'))
+            'root' => public_path('uploads/'),
         ],
-        'uploadfiles'=>[
-            'driver'=>'local',
-            'root'=>storage_path(config('admin.upload_file_path'))
-        ],
+
 
         'local' => [
             'driver' => 'local',
@@ -60,6 +57,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
+//            'root' =>public_path(),
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],
@@ -70,6 +68,7 @@ return [
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
             'region' => env('AWS_DEFAULT_REGION'),
             'bucket' => env('AWS_BUCKET'),
+            'url' => env('AWS_URL'),
         ],
 
     ],

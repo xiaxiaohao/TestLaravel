@@ -7,10 +7,13 @@ use App\Exceptions\TagException;
 use App\Http\Controllers\Controller;
 
 use App\Model\TagModel;
+use App\Model\Category;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Support\Facades\DB;
+
 
 class TagController extends Controller
 {
@@ -45,25 +48,15 @@ class TagController extends Controller
     }
 
 
-    public function manageTag()
-    {
-        $tags = TagModel::where('is_delete', '=', 0)
-            ->get();
-        $allTags = TagModel::pluck('tag_name','id')->all();
-        return view('View',compact('tags','allTags'));
-    }
+
 
     public function findAll()
     {
-//        $tag = TagModel::all();
-//        $tags = TagModel::paginate(25);
-
 
         $tags = TagModel::where('is_delete', '=', 0)->get();
-        $allTags = TagModel::pluck('tag_name','id')->all();
-        return view('View',compact('tags','allTags'));
-//
-//        return $this->response->paginator($tags, new TagTransformer);
+        $categories = Category::all();
+        return view('View',compact('tags','categories'));
+
     }
 
 
@@ -81,6 +74,20 @@ class TagController extends Controller
         return $this->response->item($tag, new TagTransformer())->withHeader('X-Foo', 'Bar')->addMeta('ddd', 'zzk');
 
     }
+
+    public function Download(Request $request)
+    {
+        $tag = TagModel::findOrFail($request->id);
+
+        return response()->download(realpath(base_path('public/uploads')).$tag->pic,'Tagdown.png');
+    }
+
+
+
+
+
+
+
 
 
     public function DeleteOne(Request $request)
@@ -104,82 +111,75 @@ class TagController extends Controller
         }
     }
 
+
     public function UpdateOne(Request $request)
     {
         try {
-
             if ($request->id != null) {
                 $tag = TagModel::findOrFail($request->id);
-                if ($tag) {
-                    if (($request->tag_name) != null) {
-                        $tag->tag_name = $request->tag_name;
-                    }
-                    if (($request->category_id) != null) {
-                        $tag->category_id = $request->category_id;
-                    }
-                    if (($request->tag_specs) != null) {
-                        $tag->tag_specs = $request->tag_specs;
-                    }
-                    if (($request->pic) != null) {
-                        $tag->pic = $request->pic;
-                    }
-                    if (($request->update_time) != null) {
-                        $tag->update_time = $request->update_time;
-                    }
-                    if (($request->add_time) != null) {
-                        $tag->add_time = $request->add_time;
-                    }
-
+                if ($tag && ($tag->is_delete == 0)) {
+                    $tag = $this->check($request,$tag);
                     $tag->save();
                     $this->msg(200, 'success update one');
                 }
+                else{
+                    $this->msg(404, 'tag not found');
+                }
             } else {
                 $tag = new TagModel();
-                $tag->tag_name = $request->tag_name;
-                if (($request->category_id) != null) {
-                    $tag->category_id = $request->category_id;
-                }
-                $tag->tag_specs = $request->tag_specs;
-                $tag->add_time = $request->add_time;
-                $tag->pic = $request->pic;
+                $tag = $this->check($request,$tag);
                 $tag->save();
                 $this->msg(200, 'success add one');
             }
 
-
         } catch (\Exception $exception) {
-//          $a= $exception->getMessage();
-            $this->msg(1000, "此用户不存在");
+          echo $exception->getMessage();
+//            $this->msg(1000, "error not found");
         }
     }
 
-    public function uploadImg(Request $request){
+    public function check($request,$tag){
 
-        $tag_pic = $request->pic('img');
-        if ($tag_pic) {
-
-            //获取文件的原文件名 包括扩展名
-            $yuanname= $tag_pic->getClientOriginalName();
-
-            //获取文件的扩展名
-            $tag=$tag_pic->getClientOriginalExtension();
-
-            //获取文件的类型
-            $type=$tag_pic->getClientMimeType();
-
-            //获取文件的绝对路径，但是获取到的在本地不能打开
-            $path=$tag_pic->getRealPath();
-
-            //要保存的文件名 时间+扩展名
-            $filename=date('Y-m-d') . '/' . uniqid() .'.'.$tag;
-            //保存文件          配置文件存放文件的名字  ，文件名，路径
-            $bool= Storage::disk('uploadimg')->put($filename,file_get_contents($path));
-            //return back();
-            return json_encode(['status'=>1,'filepath'=>$filename]);
-        }else{
-            $idCardFrontImg = '';
-            return json_encode($idCardFrontImg);
+        if (($request->tag_name) != null) {
+            $tag->tag_name = $request->tag_name;
         }
+        if (($request->category_id) != null) {
+            $tag->category_id = $request->category_id;
+        }
+        if (($request->tag_specs) != null) {
+            $tag->tag_specs = $request->tag_specs;
+        }
+        if (($request->pic) != null) {
+            $tag->pic = $request->pic;
+        }
+        if (($request->update_time) != null) {
+            $tag->update_time = $request->update_time;
+        }
+
+
+
+            $file = $request->file('pic');
+            //判断文件是否上传成功
+            if ($file->isValid()){
+                //原文件名
+                $originalName = $file->getClientOriginalName();
+                //扩展名
+                $ext = $file->getClientOriginalExtension();
+                //MimeType
+                $type = $file->getClientMimeType();
+                //临时绝对路径
+                $realPath = $file->getRealPath();
+                $filename = uniqid().'.'.$ext;
+                $bool = Storage::disk('uploads')->put($filename,file_get_contents($realPath));
+                //判断是否上传成功
+                if($bool){
+                    $tag->pic = "/".$filename;
+                }else{
+                    echo 'fail';
+                }
+            }
+
+        return $tag;
     }
 
 

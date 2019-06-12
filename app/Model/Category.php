@@ -21,7 +21,7 @@ class Category extends Model
 //        return $this->hasOne('App\TestModel', 'api');
 //    }
 
-    protected $table = 'tag_category';
+    protected $table = 'category';
 
     public $fillable = ['title','pid'];
 

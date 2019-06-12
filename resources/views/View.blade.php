@@ -20,7 +20,9 @@
                 <div class="ibox-title">
                     <h5>表格</h5>
                 </div>
+
                 <div class="ibox-content">
+
                     <table class="table">
                         <thead>
                         <tr>
@@ -31,19 +33,38 @@
                             <th>图片</th>
                             <th>新增时间</th>
                             <th>更新时间</th>
+                            <th>标签操作</th>
                         </tr>
                         </thead>
                         <tbody>
+                        <button class="add">新增标签</button>
                         @foreach($tags as $tag)
-                        <tr>
-                            <td>{{ $tag->id }}</td>
-                            <td>{{ $tag->tag_name }}</td>
-                            <td>{{ $tag->category_id }}</td>
-                            <td>{{ $tag->tag_specs }}</td>
-                            <td>{{ $tag->pic }}</td>
-                            <td>{{ $tag->add_time }}</td>
-                            <td>{{ $tag->update_time }}</td>
-                        </tr>
+                            <tr>
+                                <td>{{ $tag->id }}</td>
+                                <td>{{ $tag->tag_name }}</td>
+                                <td>
+                            @php include_once ('../resources/views/Recursion.php');
+                                 $aa = new Recursion();
+                                 $id = null;
+                                 $link = null;
+                                 $categories = $categories;
+                                 if($tag->category_id != 0){
+                                    $id = $tag->category_id;
+                                    $link = $aa ->Montage($link,$id,$categories);
+                                 }
+                                 echo $link;
+                            @endphp
+
+                                </td>
+                                <td>{{ $tag->tag_specs }}</td>
+                                <td>{{ $tag->pic }}</td>
+                                <td>{{ $tag->add_time }}</td>
+                                <td>{{ $tag->update_time }}</td>
+                                <td>
+                                    <button class="download" id="{{$tag->id}}">下载标签</button>
+                                    <button class="del" id="{{$tag->id}}">删除标签</button>
+                                <td>
+                            </tr>
                         @endforeach
                         </tbody>
                     </table>
@@ -67,7 +88,11 @@
 <!-- Peity -->
 <script src="/js/peity-demo.js"></script>
 
+<script src="/js/help.js"></script>
+
 <script>
+
+
 
 </script>
 </body>

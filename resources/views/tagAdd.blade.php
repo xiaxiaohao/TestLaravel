@@ -10,11 +10,11 @@
 <body>
 <div class="container">
     <div class="panel panel-primary">
-        <div class="panel-heading">标签管理</div>
+        <div class="panel-heading">标签添加</div>
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-6">
-                    <h3>分类树状图
+                    <h3>选择分类
                     </h3>
                     <ul id="tree1">
                         @foreach($categories as $category)
@@ -30,7 +30,7 @@
                 </div>
                 <div class="col-md-6">
                     <h3>Add New Tag</h3>
-                    {!! Form::open(['route'=>'add.tag']) !!}
+                    {!! Form::open(array('route'=>'add-tag','enctype'=>'multipart/form-data','method' => 'post')) !!}
                     @if ($message = Session::get('success'))
                         <div class="alert alert-success alert-block">
                             <button type="button" class="close" data-dismiss="alert">×</button>
