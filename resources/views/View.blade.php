@@ -37,7 +37,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <button class="add">新增标签</button>
+                        <button class="btn btn-primary">新增标签</button>
                         @foreach($tags as $tag)
                             <tr>
                                 <td>{{ $tag->id }}</td>
@@ -61,8 +61,8 @@
                                 <td>{{ $tag->add_time }}</td>
                                 <td>{{ $tag->update_time }}</td>
                                 <td>
-                                    <button class="download" id="{{$tag->id}}">下载标签</button>
-                                    <button class="del" id="{{$tag->id}}">删除标签</button>
+                                    <button class="btn btn-info" id="{{$tag->id}}">下载标签</button>
+                                    <button class="btn btn-warning" id="{{$tag->id}}">删除标签</button>
                                 <td>
                             </tr>
                         @endforeach
