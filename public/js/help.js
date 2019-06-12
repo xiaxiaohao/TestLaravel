@@ -5,11 +5,11 @@ $(function(){
         $('#category_id').val($x);
     })
 
-    $('.add').click(function () {
+    $('.btn-primary').click(function () {
         $(window).attr('location', '/view');
     });
 
-    $('.download').click(function () {
+    $('.btn-info').click(function () {
         var id = $(this).attr("id");
 
         var url = "http://www.kinfy.com/api/down?id=";
@@ -18,7 +18,7 @@ $(function(){
 
     });
 
-    $('.del').click(function () {
+    $('.btn-warning').click(function () {
         var id = $(this).attr("id");
 
         var url = "http://www.kinfy.com/api/del?id=";
