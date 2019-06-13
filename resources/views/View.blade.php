@@ -44,7 +44,6 @@
                             <th>标签名</th>
                             <th>分类路径</th>
                             <th>标签规格</th>
-                            <th>图片</th>
                             <th>新增时间</th>
                             <th>更新时间</th>
                             <th>标签操作</th>
@@ -72,7 +71,6 @@
 
                                 </td>
                                 <td>{{ $tag->tag_specs }}</td>
-                                <td>{{ $tag->pic }}</td>
                                 <td>{{ $tag->add_time }}</td>
                                 <td>{{ $tag->update_time }}</td>
                                 <td>
