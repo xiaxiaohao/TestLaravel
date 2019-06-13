@@ -37,6 +37,12 @@
                             <strong>{{ $message }}</strong>
                         </div>
                     @endif
+                    @if ($message = Session::get('failed'))
+                        <div class="alert alert-error alert-danger">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            <strong>{{ $message }}</strong>
+                        </div>
+                    @endif
 
                     <div class="form-group {{ $errors->has('tag_name') ? 'has-error' : '' }}">
                         {!! Form::label('tag_name:') !!}
@@ -74,6 +80,6 @@
 
 
 <script src="/js/treeview.js"></script>
-<script src="/js/category_id.js"></script>
+<script src="/js/help.js"></script>
 </body>
 </html>

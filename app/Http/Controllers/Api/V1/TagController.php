@@ -22,8 +22,6 @@ class TagController extends Controller
 
     protected function msg($errcode = 0, $msg = '', $data = [])
     {
-
-
         header('Content-Type:application/json; charset=utf-8');
         $r = [
             'errcode' => $errcode,
@@ -87,28 +85,21 @@ class TagController extends Controller
 
 
 
-
-
-
     public function DeleteOne(Request $request)
     {
-        try {
+
 
             $tag = TagModel::findOrFail($request->id);
             if ($tag) {
                 if(($tag->is_delete) == 0) {
                     DB::table('tag')->where('id', $request->id)->update(['is_delete' => 1]);
-//                    $tag->delete();
-                   $this->msg(200, "delete success");
+                    return back()->with('success','删除成功');
                 }else {
-                   $this->msg(1000, "delete error");
+                    return back()->with('failed','删除失败');
                 }
             }
 
-        } catch (\Exception $exception) {
-            $a = $exception->getMessage();
-            $this->msg(1000, $a);
-        }
+
     }
 
 
@@ -118,18 +109,152 @@ class TagController extends Controller
             if ($request->id != null) {
                 $tag = TagModel::findOrFail($request->id);
                 if ($tag && ($tag->is_delete == 0)) {
-                    $tag = $this->check($request,$tag);
+                    if (($request->tag_name) != null) {
+                        $tag->tag_name = $request->tag_name;
+                    }else{
+                        return back()->with('failed','tag_name is null');
+                    }
+
+
+
+                    if (($request->category_id) != null) {
+                        $tag->category_id = $request->category_id;
+                    }else{
+                        return back()->with('failed','category_id is null');
+                    }
+
+
+                    if (($request->tag_specs) != null) {
+                        $tag->tag_specs = $request->tag_specs;
+                    }else{
+                        return back()->with('failed','tag_specs is null');
+                    }
+
+
+                    if (($request->pic) != null) {
+                        $tag->pic = $request->pic;
+                    }else{
+                        return back()->with('failed','picture is null');
+                    }
+
+
+                    if (($request->update_time) != null) {
+                        $tag->update_time = $request->update_time;
+                    }
+
+                    $file = $request->file('pic');
+                    //判断文件是否上传成功
+
+                    if ($file->isValid()){
+                        //限制文件后缀
+                        $fileTypes = array('png','jpg');
+                        //原文件名
+                        $originalName = $file->getClientOriginalName();
+                        //扩展名
+                        $ext = $file->getClientOriginalExtension();
+                        $isInFileType = in_array($ext,$fileTypes);
+                        //判断文件后缀
+                        if($isInFileType){
+                            $type = $file->getClientMimeType();
+                            //临时绝对路径
+                            $realPath = $file->getRealPath();
+                            $filename = uniqid().'.'.$ext;
+                            $bool = Storage::disk('uploads')->put($filename,file_get_contents($realPath));
+                            //判断是否上传成功
+                            if($bool){
+                                $tag->pic = "/".$filename;
+                            }else{
+                                echo 'fail';
+                            }
+                        }
+                        else{
+                            return back()->with('failed','File format is not correct');
+                        }
+
+                    } else {
+                        return back()->with('failed','picture is null');
+                    }
+
+
                     $tag->save();
-                    $this->msg(200, 'success update one');
+                    return back()->with('success','更新成功');
                 }
                 else{
-                    $this->msg(404, 'tag not found');
+                    return back()->with('failed','更新失败');
                 }
             } else {
                 $tag = new TagModel();
-                $tag = $this->check($request,$tag);
+
+                if (($request->tag_name) == null) {
+                    return back()->with('failed','tag_name is null');
+                }else{
+                    $tag->tag_name = $request->tag_name;
+                }
+
+
+
+                if (($request->category_id) == null) {
+
+                    return back()->with('failed','category_id is null');
+                }else{
+                    $tag->category_id = $request->category_id;
+                }
+
+
+                if (($request->tag_specs) == null) {
+                    return back()->with('failed','tag_specs is null');
+                }else{
+                    $tag->tag_specs = $request->tag_specs;
+                }
+
+
+                if (($request->pic) == null) {
+                    return back()->with('failed','picture is null');
+                }else{
+                    $tag->pic = $request->pic;
+                }
+
+                $file = $request->file('pic');
+                //判断文件是否上传成功
+
+                if ($file->isValid()){
+                    //限制文件后缀
+                    $fileTypes = array('png','jpg');
+                    //原文件名
+                    $originalName = $file->getClientOriginalName();
+                    //扩展名
+                    $ext = $file->getClientOriginalExtension();
+                    $isInFileType = in_array($ext,$fileTypes);
+                    //判断文件后缀
+                    if($isInFileType){
+                        $type = $file->getClientMimeType();
+                        //临时绝对路径
+                        $realPath = $file->getRealPath();
+                        $filename = uniqid().'.'.$ext;
+                        $bool = Storage::disk('uploads')->put($filename,file_get_contents($realPath));
+                        //判断是否上传成功
+                        if($bool){
+                            $tag->pic = "/".$filename;
+                        }else{
+                            echo 'fail';
+                        }
+                    }
+                    else{
+                        return back()->with('failed','File format is not correct');
+                    }
+
+                } else {
+                    return back()->with('failed','picture is null');
+                }
+
+
+
+
+
+
+
                 $tag->save();
-                $this->msg(200, 'success add one');
+                return back()->with('success','添加成功');
             }
 
         } catch (\Exception $exception) {
@@ -140,44 +265,39 @@ class TagController extends Controller
 
     public function check($request,$tag){
 
-        if (($request->tag_name) != null) {
-            $tag->tag_name = $request->tag_name;
-        }
-        if (($request->category_id) != null) {
-            $tag->category_id = $request->category_id;
-        }
-        if (($request->tag_specs) != null) {
-            $tag->tag_specs = $request->tag_specs;
-        }
-        if (($request->pic) != null) {
-            $tag->pic = $request->pic;
-        }
-        if (($request->update_time) != null) {
-            $tag->update_time = $request->update_time;
-        }
-
 
 
             $file = $request->file('pic');
             //判断文件是否上传成功
+
             if ($file->isValid()){
+                //限制文件后缀
+                $fileTypes = array('png','jpg');
                 //原文件名
                 $originalName = $file->getClientOriginalName();
                 //扩展名
                 $ext = $file->getClientOriginalExtension();
-                //MimeType
-                $type = $file->getClientMimeType();
-                //临时绝对路径
-                $realPath = $file->getRealPath();
-                $filename = uniqid().'.'.$ext;
-                $bool = Storage::disk('uploads')->put($filename,file_get_contents($realPath));
-                //判断是否上传成功
-                if($bool){
-                    $tag->pic = "/".$filename;
-                }else{
-                    echo 'fail';
+                $isInFileType = in_array($ext,$fileTypes);
+                //判断文件后缀
+                if($isInFileType){
+                    $type = $file->getClientMimeType();
+                    //临时绝对路径
+                    $realPath = $file->getRealPath();
+                    $filename = uniqid().'.'.$ext;
+                    $bool = Storage::disk('uploads')->put($filename,file_get_contents($realPath));
+                    //判断是否上传成功
+                    if($bool){
+                        $tag->pic = "/".$filename;
+                    }else{
+                        echo 'fail';
+                    }
                 }
+
+            } else {
+                return back()->with('failed','picture is null');
             }
+
+
 
         return $tag;
     }

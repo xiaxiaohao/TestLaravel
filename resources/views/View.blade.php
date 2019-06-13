@@ -13,12 +13,26 @@
 </head>
 
 <body class="gray-bg">
+
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-sm-6">
+
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>表格</h5>
+                    @if ($message = Session::get('success'))
+                        <div class="alert alert-success alert-block">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            <strong>{{ $message }}</strong>
+                        </div>
+                    @endif
+                    @if ($message = Session::get('failed'))
+                        <div class="alert alert-error alert-danger">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            <strong>{{ $message }}</strong>
+                        </div>
+                    @endif
                 </div>
 
                 <div class="ibox-content">
@@ -38,6 +52,7 @@
                         </thead>
                         <tbody>
                         <button class="btn btn-primary">新增标签</button>
+
                         @foreach($tags as $tag)
                             <tr>
                                 <td>{{ $tag->id }}</td>
