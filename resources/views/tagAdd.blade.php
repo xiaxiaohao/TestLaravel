@@ -52,7 +52,7 @@
 
                     <div  class="form-group {{ $errors->has('category_id') ? 'has-error' : '' }}">
                         {!! Form::label('Category id:') !!}
-                        {!! Form::text('category_id', old('category_id'), ['id'=>'category_id','class'=>'form-control', 'placeholder'=>'Choose Category']) !!}
+                        {!! Form::text('category_id', old('category_id'), ['id'=>'category_id','class'=>'form-control', 'placeholder'=>'Choose Category','readonly'=>'true']) !!}
                         <span class="text-danger">{{ $errors->first('category_id') }}</span>
                     </div>
 

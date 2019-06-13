@@ -42,7 +42,7 @@ $api->version('v1', ['namespace' => 'App\Http\Controllers\Api\V1'], function ($a
 
     $api->post('updatetag','TagController@UpdateOne');
 
-    $api->get('del','TagController@DeleteOne');
+    $api->post('del','TagController@DeleteOne');
 
     $api->get('down','TagController@Download');
 
