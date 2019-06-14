@@ -242,43 +242,43 @@ class TagController extends Controller
         }
     }
 
-    public function check($request, $tag)
-    {
-
-
-        $file = $request->file('pic');
-        //判断文件是否上传成功
-
-        if ($file->isValid()) {
-            //限制文件后缀
-            $fileTypes = array('png', 'jpg');
-            //原文件名
-            $originalName = $file->getClientOriginalName();
-            //扩展名
-            $ext = $file->getClientOriginalExtension();
-            $isInFileType = in_array($ext, $fileTypes);
-            //判断文件后缀
-            if ($isInFileType) {
-                $type = $file->getClientMimeType();
-                //临时绝对路径
-                $realPath = $file->getRealPath();
-                $filename = uniqid() . '.' . $ext;
-                $bool = Storage::disk('uploads')->put($filename, file_get_contents($realPath));
-                //判断是否上传成功
-                if ($bool) {
-                    $tag->pic = "/" . $filename;
-                } else {
-                    echo 'fail';
-                }
-            }
-
-        } else {
-            return back()->with('failed', 'picture is null');
-        }
-
-
-        return $tag;
-    }
+//    public function check($request, $tag)
+//    {
+//
+//
+//        $file = $request->file('pic');
+//        //判断文件是否上传成功
+//
+//        if ($file->isValid()) {
+//            //限制文件后缀
+//            $fileTypes = array('png', 'jpg');
+//            //原文件名
+//            $originalName = $file->getClientOriginalName();
+//            //扩展名
+//            $ext = $file->getClientOriginalExtension();
+//            $isInFileType = in_array($ext, $fileTypes);
+//            //判断文件后缀
+//            if ($isInFileType) {
+//                $type = $file->getClientMimeType();
+//                //临时绝对路径
+//                $realPath = $file->getRealPath();
+//                $filename = uniqid() . '.' . $ext;
+//                $bool = Storage::disk('uploads')->put($filename, file_get_contents($realPath));
+//                //判断是否上传成功
+//                if ($bool) {
+//                    $tag->pic = "/" . $filename;
+//                } else {
+//                    echo 'fail';
+//                }
+//            }
+//
+//        } else {
+//            return back()->with('failed', 'picture is null');
+//        }
+//
+//
+//        return $tag;
+//    }
 
 
 }
